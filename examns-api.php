@@ -11,8 +11,8 @@
  * @package           Examens API
  *
  * @wordpress-plugin
- * Plugin Name:       WordPress Plugin Boilerplate Tutorial
- * Plugin URI:        http://example.com/plugin-name-uri/
+ * Plugin Name:       Examenes API
+ * Plugin URI:        https://versatile-handbook-314758.framer.app/page
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
  * Version:           1.0.0
  * Author:            Aarón RV
@@ -28,19 +28,16 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'PLUGIN_NAME_PLUGIN_NAME', 'Exámenes y ejercícios' );
-define( 'PLUGIN_NAME_VERSION', '1.0.0' );
-define( 'PLUGIN_NAME_URL', plugin_dir_url( __FILE__ ) );
-define( 'PLUGIN_NAME_PATH', plugin_dir_path( __FILE__ ) );
-
-require_once 'wp-load.php'; 
 require_once 'includes/functions.php';
 require_once 'includes/class-api-handler.php'; 
+require_once 'views/main-view.php'; 
+require_once 'views/results.php';
+require_once 'views/filters.php';
 
 // Enqueue scripts and styles
 function enqueue_assets() {
     wp_enqueue_style('examens-style', plugins_url('assets/css/style.css', __FILE__));
-    wp_enqueue_script('examens-script', plugins_url('assets/js/script.js', __FILE__), array('jquery'), null, true);
+    wp_enqueue_script('examens-script', plugins_url('assets/js/scripts.js', __FILE__), array('jquery'), null, true);
 }
-add_action('wp_enqueue_scripts', 'enqueue_examens_assets');
+add_action('wp_enqueue_scripts', 'enqueue_assets');
 

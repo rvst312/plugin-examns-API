@@ -6,8 +6,6 @@
 class Fetch_API_handler {
     private $url;
 
-    // endopint buscar ejercios: https://formaciomiro-cercadorapi-ne-prd-ckccggh5heckbxf7.northeurope-01.azurewebsites.net/cerca
-
     /**
      * Constructor that initializes the API URL.
      *
