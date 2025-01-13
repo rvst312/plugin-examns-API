@@ -1,5 +1,4 @@
 <?php
-require_once __DIR__ . '/class-api-handler.php';
 
 /**
  * Request to API
@@ -26,6 +25,7 @@ function send_data_to_api($data) {
 /**
  * Data to send in headers for query  
  *
+ * @param string $tipus_cerca El tipo de datos que carga (ej. "pregunta", "examen").
  * @param string $comunitat La comunidad autónoma.
  * @param string $tipus_prova El tipo de prueba (ej. "selectivitat").
  * @param string $assignatura La asignatura (ej. "química").
@@ -34,19 +34,47 @@ function send_data_to_api($data) {
  * @param string $tematica La tematica (ej. "taula periòdica").
  * @param int $pagina Paginación (ej. 1).
  */
-function get_exams_data($comunitat, $tipus_prova, $assignatura, $convocatoria, $any, $tematica, $pagina) {
+function get_exams_data($tipus_cerca, $comunitat, $tipus_prova, $assignatura, $convocatoria, $any, $tematica, $pagina) {
     $data = [
-        "tipus_cerca" => "pregunta",
+        "tipus_cerca" => $tipus_cerca,
         "comunitat" => $comunitat,
         "tipus_prova" => $tipus_prova,
         "assignatura" => $assignatura,
         "convocatoria" => $convocatoria,
         "any" => $any,
-        "incloure_anys_posteriors" => true,
+        "incloure_anys_posteriors" => false,
         "tematica" => $tematica,
         "pagina" => $pagina,
-        "mida_pagina" => 10
+        "mida_pagina" => 12
     ];
 
     return send_data_to_api($data);
+}
+
+/**
+ * Get exam by ID from API
+ * 
+ * @param string $id Exam ID
+ * @return array|null Exam data or null if not found
+ */
+function get_exam_by_id($id) {
+    $base_url = 'https://formaciomiro-cercadorapi-ne-prd-ckccggh5heckbxf7.northeurope-01.azurewebsites.net';
+    $endpoint = '/cerca';
+    
+    $api_handler = new Fetch_API_handler($base_url . $endpoint);
+    
+    $data = [
+        "tipus_cerca" => "pregunta",
+        "id" => $id,
+        "mida_pagina" => 1,
+        "pagina" => 1
+    ];
+    
+    $response = $api_handler->post_data_from_api($data);
+    
+    if (isset($response['error']) || !isset($response['resultats']) || empty($response['resultats'])) {
+        return null;
+    }
+    
+    return $response['resultats'][0];
 }

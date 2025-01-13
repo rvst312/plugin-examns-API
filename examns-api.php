@@ -11,9 +11,9 @@
  * @package           Examens API
  *
  * @wordpress-plugin
- * Plugin Name:       Examenes API
+ * Plugin Name:       Exercises & exams API
  * Plugin URI:        https://versatile-handbook-314758.framer.app/page
- * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
+ * Description:       This plugin provides a simple way to integrate exercises and exams into your WordPress site.
  * Version:           1.0.0
  * Author:            Aarón RV
  * Author URI:        https://www.linkedin.com/in/aar%C3%B3n-franco-fern%C3%A1ndez/
@@ -33,6 +33,7 @@ require_once 'includes/class-api-handler.php';
 require_once 'views/main-view.php'; 
 require_once 'views/results.php';
 require_once 'views/filters.php';
+require_once 'views/pagination.php';
 
 // Enqueue scripts and styles
 function enqueue_assets() {
