@@ -38,6 +38,7 @@ function mostrar_resultados($response)
                         <a class="button-secondary"
                             href="<?= esc_url($item['url_examen']); ?>"
                             target="_blank">
+                            Ver Exercici
                         </a>
                         <a class="button-secondary"
                             href="<?= esc_url($item['url_solucio']); ?>"

@@ -34,6 +34,7 @@ require_once 'views/main-view.php';
 require_once 'views/results.php';
 require_once 'views/filters.php';
 require_once 'views/pagination.php';
+require_once 'views/pdf-viewer.php';
 
 // Enqueue scripts and styles
 function enqueue_assets() {

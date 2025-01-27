@@ -50,31 +50,3 @@ function get_exams_data($tipus_cerca, $comunitat, $tipus_prova, $assignatura, $c
 
     return send_data_to_api($data);
 }
-
-/**
- * Get exam by ID from API
- * 
- * @param string $id Exam ID
- * @return array|null Exam data or null if not found
- */
-function get_exam_by_id($id) {
-    $base_url = 'https://formaciomiro-cercadorapi-ne-prd-ckccggh5heckbxf7.northeurope-01.azurewebsites.net';
-    $endpoint = '/cerca';
-    
-    $api_handler = new Fetch_API_handler($base_url . $endpoint);
-    
-    $data = [
-        "tipus_cerca" => "pregunta",
-        "id" => $id,
-        "mida_pagina" => 1,
-        "pagina" => 1
-    ];
-    
-    $response = $api_handler->post_data_from_api($data);
-    
-    if (isset($response['error']) || !isset($response['resultats']) || empty($response['resultats'])) {
-        return null;
-    }
-    
-    return $response['resultats'][0];
-}

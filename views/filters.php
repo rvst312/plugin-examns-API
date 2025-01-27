@@ -51,7 +51,7 @@ function mostrar_filtros($atts)
 ?>
     <form method="GET" class="filters-wrapper" id="filters-form">
         <select name="assignatura">
-            <option value="">-- Asignatura --</option>
+            <option value="">-- Assignatura --</option>
             <?= crear_opciones($opciones_assignatura, $atts['assignatura']); ?>
         </select>
         <select name="tematica">
@@ -59,7 +59,7 @@ function mostrar_filtros($atts)
             <?= crear_opciones($opciones_tematica[$atts['assignatura']] ?? [], $atts['tematica']); ?>
         </select>
         <select name="any">
-            <option value="">-- Año --</option>
+            <option value="">-- Any --</option>
             <?= crear_opciones($opciones_any, $atts['any']); ?>
         </select>
         <select name="convocatoria">
