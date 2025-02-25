@@ -7,7 +7,7 @@ function mostrar_resultados($response)
     <!-- Skeleton loader -->
     <div class="grid-container" id="skeleton-container">
         <?php for ($i = 0; $i < 12; $i++): ?>
-            <div class="grid-item">
+            <div class="grid-item" style="background-color:#fff;">
                 <div class="skeleton skeleton-img"></div>
                 <div class="skeleton skeleton-text"></div>
                 <div class="skeleton skeleton-text"></div>
@@ -17,6 +17,7 @@ function mostrar_resultados($response)
             </div>
         <?php endfor; ?>
     </div>
+    <!-- End skeleton loader -->
 
     <!-- Results -->
     <div class="grid-container hidden" id="results-container">
@@ -29,21 +30,23 @@ function mostrar_resultados($response)
                         alt="Miniatura"
                         loading="lazy"
                         onload="this.style.opacity='1'">
-                    <p>
+                    <p style="text-align: center;">
+                        <span class="category"><?= htmlspecialchars($item['tipus_prova']); ?></span>
+                        <span class="theme"><?= htmlspecialchars($item['comunitat']); ?></span><br />
                         <span class="subject"><?= htmlspecialchars($item['assignatura']); ?></span>
                         <span class="convocatoria"><?= htmlspecialchars($item['convocatoria']); ?></span>
                         <span class="year"><?= htmlspecialchars($item['any']); ?></span>
                     </p>
                     <div class="buttons-item">
-                        <a class="button-secondary"
-                            href="<?= esc_url($item['url_examen']); ?>"
+                        <a class="button-secondary-exams"
+                            href="<?= esc_url(home_url('/ejercici/' . $item['id'])); ?>"
                             target="_blank">
-                            Ver Exercici
+                            Veure Exercici
                         </a>
-                        <a class="button-secondary"
-                            href="<?= esc_url($item['url_solucio']); ?>"
+                        <a class="button-secondary-exams"
+                            href="<?= esc_url(home_url('/solucio/' . $item['id'])); ?>"
                             target="_blank">
-                            Ver Solucio
+                            Veure Solució
                         </a>
                     </div>
                 </div>

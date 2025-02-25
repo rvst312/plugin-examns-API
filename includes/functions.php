@@ -6,9 +6,9 @@
  * @param array $data Data to send to API
  * @return array $response API response to array 
  */
-function send_data_to_api($data) {
-    $base_url = 'https://formaciomiro-cercadorapi-ne-prd-ckccggh5heckbxf7.northeurope-01.azurewebsites.net';
-    $endpoint = '/cerca';
+function send_data_to_api($data, $base_url, $endpoint) {
+    // Handler empty $data state 
+    if (empty($data)) return ['error' => 'No se proporcionaron datos'];
     
     $api_handler = new Fetch_API_handler($base_url . $endpoint);
     
@@ -25,6 +25,8 @@ function send_data_to_api($data) {
 /**
  * Data to send in headers for query  
  *
+ * @param string $base_url URL base.
+ * @param string $endpoint Endpoint to attack.
  * @param string $tipus_cerca El tipo de datos que carga (ej. "pregunta", "examen").
  * @param string $comunitat La comunidad autónoma.
  * @param string $tipus_prova El tipo de prueba (ej. "selectivitat").
@@ -34,7 +36,7 @@ function send_data_to_api($data) {
  * @param string $tematica La tematica (ej. "taula periòdica").
  * @param int $pagina Paginación (ej. 1).
  */
-function get_exams_data($tipus_cerca, $comunitat, $tipus_prova, $assignatura, $convocatoria, $any, $tematica, $pagina) {
+function get_exams_data($base_url, $endpoint, $tipus_cerca, $comunitat, $tipus_prova, $assignatura, $convocatoria, $any, $tematica, $pagina) {
     $data = [
         "tipus_cerca" => $tipus_cerca,
         "comunitat" => $comunitat,
@@ -48,5 +50,5 @@ function get_exams_data($tipus_cerca, $comunitat, $tipus_prova, $assignatura, $c
         "mida_pagina" => 12
     ];
 
-    return send_data_to_api($data);
+    return send_data_to_api($data, $base_url, $endpoint);
 }

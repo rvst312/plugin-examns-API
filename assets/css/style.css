@@ -1,34 +1,25 @@
 /* Global styles */
-.button-primary{
-    color: #fff;
-    background-color: #ce4500;
-    border: none;
-    border-radius: 9px;
-    padding: 8px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.button-primary-exams{
+    color: #fff!important;
+    background: #ce4500!important;
+    border: none!important;
+    border-radius: 9px!important;
+    padding: 8px 20px!important;
+    font-size: 16px!important;
+    cursor: pointer!important;
+    transition: background-color 0.3s ease!important;
 }
 
-.button-primary:hover {
-    background-color: #da5c00;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.button-secondary{
-    color: #fff;
-    background-color: #ce4500;
-    border: none;
-    border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.button-secondary:hover {
-    background-color: #ae3b01;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 4px 8px rgba(0,0,0,0.1);
+.button-secondary-exams{
+    background: #fff!important;
+    color: #ce4500!important;
+    border: none!important;
+    border-radius: 9px!important;
+    padding: 4px 8px!important;
+    font-size: 12px!important;
+    cursor: pointer!important;
+    text-transform: uppercase!important;
+    transition: background-color 0.3s ease!important;
 }
 
 /* Filters wrapper */
@@ -37,18 +28,23 @@
     gap: 10px;
     margin-top: 3rem;
     margin-bottom: 3rem;
-    border: 1px solid #a5a5a5;
 }
 
 .grid-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    gap: 20px;
 }
 
 .grid-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+    background: #E6E1E1;
     border: 1px solid #ccc;
-    padding: 20px; 
+    padding: 10px; 
+    border-radius: 9px;
 }
 
 .buttons-item{
@@ -115,4 +111,60 @@
 
 .hidden {
     display: none;
+}
+.exercise-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.exercise-header {
+    margin-bottom: 20px;
+}
+
+.exercise-buttons {
+    margin-bottom: 20px;
+}
+
+.button-primary {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #0073aa;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.button-primary:hover {
+    background-color: #005177;
+}
+
+.pdf-container {
+    margin-bottom: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.exercise-description {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 4px;
+}
+
+.exercise-description h3 {
+    margin-top: 0;
+}
+
+.exam-filters {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    margin: 20px 0;
+}
+
+.year-buttons,
+.subject-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
 }

@@ -28,15 +28,58 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
+// Include necessary files
 require_once 'includes/functions.php';
 require_once 'includes/class-api-handler.php'; 
 require_once 'views/main-view.php'; 
 require_once 'views/results.php';
 require_once 'views/filters.php';
 require_once 'views/pagination.php';
-require_once 'views/pdf-viewer.php';
+require_once 'views/exercise_view.php'; 
+require_once 'views/listing_view.php';
+require_once 'views/button-seo.php'; 
 
-// Enqueue scripts and styles
+// Rewrite urls for more friendly urls
+function add_exercise_rewrite_rules() {
+    // Individual exercise and solution rules (more specific first)
+    add_rewrite_rule(
+        '^ejercici/([a-zA-Z0-9-_]+)/?$',
+        'index.php?pagename=ejercici&id=$matches[1]',
+        'top'
+    );
+
+    add_rewrite_rule(
+        '^solucio/([a-zA-Z0-9-_]+)/?$',
+        'index.php?pagename=solucio&id=$matches[1]',
+        'top'
+    );
+
+    // Year listing rule (must be before subject rule)
+    add_rewrite_rule(
+        '^ejercicis/([0-9]{4})/?$',
+        'index.php?pagename=ejercicis&year=$matches[1]',
+        'top'
+    );
+
+    // Subject listing rule (more permissive pattern, must be last)
+    add_rewrite_rule(
+        '^ejercicis/([^/]+)/?$',
+        'index.php?pagename=ejercicis&subject=$matches[1]',
+        'top'
+    );
+}
+add_action('init', 'add_exercise_rewrite_rules');
+
+// Register the query variables
+function register_exercise_query_vars($vars) {
+    $vars[] = 'id';
+    $vars[] = 'year';
+    $vars[] = 'subject';
+    return $vars;
+}
+add_filter('query_vars', 'register_exercise_query_vars');
+
+// Enqueue assets
 function enqueue_assets() {
     wp_enqueue_style('examens-style', plugins_url('assets/css/style.css', __FILE__));
     wp_enqueue_script('examens-script', plugins_url('assets/js/scripts.js', __FILE__), array('jquery'), null, true);
