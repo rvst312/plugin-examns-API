@@ -35,20 +35,25 @@ function view_pagination($total_items, $items_per_page, $current_params = []){
         $pagination_links .= '<a href="' . esc_url($prev_url) . '" class="prev-page">&laquo; Previous</a> ';
     }
 
-    // Show only first 3 pages
+    // Show first 3 pages
     for ($i = 1; $i <= min(3, $total_pages); $i++) {
         $url = '?' . ($query_string ? $query_string . '&' : '') . 'pagina=' . $i;
         $active_class = ($i === $current_page) ? ' active' : '';
         $pagination_links .= '<a href="' . esc_url($url) . '" class="page-number' . $active_class . '">' . $i . '</a> ';
     }
 
-    // Add ellipsis if there are more pages after page 3
+    // Add ellipsis and last page if there are more than 3 pages
     if ($total_pages > 3) {
         $pagination_links .= '<span class="pagination-dots">...</span>';
+        
+        // Add last page number
+        $url = '?' . ($query_string ? $query_string . '&' : '') . 'pagina=' . $total_pages;
+        $active_class = ($total_pages === $current_page) ? ' active' : '';
+        $pagination_links .= '<a href="' . esc_url($url) . '" class="page-number' . $active_class . '">' . $total_pages . '</a> ';
     }
 
-    // Next button - show if not on last page and within first 3 pages
-    if ($current_page < min(3, $total_pages)) {
+    // Next button - show if not on last page
+    if ($current_page < $total_pages) {
         $next_url = '?' . ($query_string ? $query_string . '&' : '') . 'pagina=' . ($current_page + 1);
         $pagination_links .= '<a href="' . esc_url($next_url) . '" class="next-page">Next &raquo;</a>';
     }

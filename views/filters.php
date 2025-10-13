@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Displays a filter form with various selection options.
  *
@@ -18,14 +17,23 @@ function mostrar_filtros($atts)
     $opciones_assignatura = [];
     $opciones_tematica = [];
     $opciones_comunitat = [];
-
-    // Process JSON to generate options
+    $opciones_tipus_prova = [];
+    
+    // Process JSON to generate options - now including all tipus_prova
     foreach ($json_data as $tipo_prova) {
-        foreach ($tipo_prova['comunitats'] as $comunitat) {
-            $opciones_comunitat[$comunitat['comunitat']] = $comunitat['comunitat'];
-            foreach ($comunitat['assignatures'] as $assignatura) {
-                $opciones_assignatura[$assignatura['assignatura']] = $assignatura['assignatura'];
-                $opciones_tematica[$assignatura['assignatura']] = $assignatura['tematiques'];
+        // Add each tipus_prova to the options
+        $tipus_prova_name = $tipo_prova['tipus_prova'];
+        $opciones_tipus_prova[strtolower($tipus_prova_name)] = $tipus_prova_name;
+        
+        // Only process the selected tipus_prova for other options
+        $selected_tipus_prova = $atts['tipus_prova'] ?? 'selectivitat';
+        if (strtolower($tipus_prova_name) === strtolower($selected_tipus_prova)) {
+            foreach ($tipo_prova['comunitats'] as $comunitat) {
+                $opciones_comunitat[$comunitat['comunitat']] = $comunitat['comunitat'];
+                foreach ($comunitat['assignatures'] as $assignatura) {
+                    $opciones_assignatura[$assignatura['assignatura']] = $assignatura['assignatura'];
+                    $opciones_tematica[$assignatura['assignatura']] = $assignatura['tematiques'];
+                }
             }
         }
     }
@@ -42,26 +50,18 @@ function mostrar_filtros($atts)
         'juny' => 'Juny',
         'setembre' => 'Setembre'
     ];
-
-    // Community 
+    
+    // If no tipus_prova options were found in the JSON, set default
+    if (empty($opciones_tipus_prova)) {
+        $opciones_tipus_prova = ['selectivitat' => 'Selectivitat'];
+    }
+    
+    // Community - keep this hardcoded for now
     $opciones_comunitat = ['catalunya' => 'Catalunya'];
-
-    // Types of test
-    $opciones_tipus_prova = ['selectivitat' => 'Selectivitat'];
+    
     ob_start();
 ?>
-    <?php
-    // Display active filters
-    $active_filters = array_filter($atts);
-    if (!empty($active_filters)) {
-        echo '<div class="active-filters">';
-        echo '<strong>Active Filters:</strong> ';
-        foreach ($active_filters as $key => $value) {
-            echo '<span class="filter-tag">' . htmlspecialchars($key) . ': ' . htmlspecialchars($value) . '</span> ';
-        }
-        echo '</div>';
-    }
-    ?>
+
     <form method="GET" class="filters-wrapper" id="filters-form">
         <?php
         // Preserve other GET parameters that might exist
@@ -71,70 +71,42 @@ function mostrar_filtros($atts)
             }
         }
         ?>
-        <select name="assignatura">
-            <option value="">-- Assignatura --</option>
-            <?= crear_opciones($opciones_assignatura, $atts['assignatura']); ?>
-        </select>
-        <select name="tematica">
-            <option value="">-- Temàtic --</option>
-            <?= crear_opciones($opciones_tematica[$atts['assignatura']] ?? [], $atts['tematica']); ?>
-        </select>
-        <select name="any">
-            <option value="">-- Any --</option>
-            <?= crear_opciones($opciones_any, $atts['any']); ?>
-        </select>
-        <select name="convocatoria">
-            <option value="">-- Convocatòria --</option>
-            <?= crear_opciones($opciones_convocatoria, $atts['convocatoria']); ?>
-        </select>
-        <select name="comunitat">
-            <option value="">-- Comunitat --</option>
-            <?= crear_opciones($opciones_comunitat, $atts['comunitat']); ?>
-        </select>
-        <select name="tipus_prova">
+        <select name="tipus_prova" class="filter-select" id="tipus_prova_select">
             <option value="">-- Tipus de prova --</option>
             <?= crear_opciones($opciones_tipus_prova, $atts['tipus_prova']); ?>
         </select>
+        <select name="assignatura" class="filter-select">
+            <option value="">-- Assignatura --</option>
+            <?= crear_opciones($opciones_assignatura, $atts['assignatura']); ?>
+        </select>
+        <?php if (!isset($atts['tipus_cerca']) || $atts['tipus_cerca'] !== 'examen'): ?>
+        <select name="tematica" class="filter-select">
+            <option value="">-- Temàtica --</option>
+            <?= crear_opciones($opciones_tematica[$atts['assignatura']] ?? [], $atts['tematica']); ?>
+        </select>
+        <?php endif; ?>
+        <select name="any" class="filter-select">
+            <option value="">-- Any --</option>
+            <?= crear_opciones($opciones_any, $atts['any']); ?>
+        </select>
+        <select name="convocatoria" class="filter-select">
+            <option value="">-- Convocatòria --</option>
+            <?= crear_opciones($opciones_convocatoria, $atts['convocatoria']); ?>
+        </select>
+        <select name="comunitat" class="filter-select">
+            <option value="">-- Comunitat --</option>
+            <?= crear_opciones($opciones_comunitat, $atts['comunitat']); ?>
+        </select>
         <div class="filter-buttons">
             <button type="submit" class="button-primary-exams">Filtrar</button>
-            <a href="<?= strtok($_SERVER["REQUEST_URI"], '?') ?>" class="button-secondary-exams">Esborrar filtres</a>
         </div>
     </form>
+    <a href="<?= strtok($_SERVER["REQUEST_URI"], '?') ?>" class="button-secondary-exams" style="margin-bottom:1rem">Esborrar filtres</a>
 
-    <style>
-        .active-filters {
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #f5f5f5;
-            border-radius: 4px;
-        }
-        .filter-tag {
-            display: inline-block;
-            padding: 3px 8px;
-            margin: 2px;
-            background: #e0e0e0;
-            border-radius: 3px;
-        }
-        .filter-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .button-secondary-exams {
-            display: inline-block;
-            padding: 6px 12px;
-            background: #f0f0f0;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            text-decoration: none;
-            color: #333;
-        }
-        .button-secondary-exams:hover {
-            background: #e0e0e0;
-        }
-    </style>
     <script>
         // Use AJAX to load dynamic options.
         document.addEventListener('DOMContentLoaded', function() {
+            const tipusProvaSelect = document.getElementById('tipus_prova_select');
             const asignaturaSelect = document.querySelector('select[name="assignatura"]');
             const tematicaSelect = document.querySelector('select[name="tematica"]');
             const currentTematica = '<?= $atts['tematica'] ?? ''; ?>';
@@ -144,6 +116,12 @@ function mostrar_filtros($atts)
                 updateTematicas(asignaturaSelect.value, currentTematica);
             }
 
+            // Add event listener for tipus_prova changes
+            tipusProvaSelect.addEventListener('change', function() {
+                // Submit the form when tipus_prova changes to reload the page with new options
+                this.form.submit();
+            });
+
             asignaturaSelect.addEventListener('change', function() {
                 updateTematicas(this.value, '');
             });
@@ -151,7 +129,7 @@ function mostrar_filtros($atts)
             function updateTematicas(selectedAssignatura, selectedTematica) {
                 const tematicas = <?= json_encode($opciones_tematica); ?>;
                 
-                tematicaSelect.innerHTML = '<option value="">-- Temàtic --</option>';
+                tematicaSelect.innerHTML = '<option value="">-- Temàtica --</option>';
 
                 if (tematicas[selectedAssignatura]) {
                     tematicas[selectedAssignatura].forEach(function(tematica) {

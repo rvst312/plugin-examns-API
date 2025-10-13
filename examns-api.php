@@ -1,17 +1,7 @@
 <?php
 
 /**
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
- * @link              http://formaciomiro.com
- * @since             1.0.0
- * @package           Examens API
- *
- * @wordpress-plugin
- * Plugin Name:       Exercises & exams API
+ * Plugin Name:       Exercises & Exams API
  * Plugin URI:        https://versatile-handbook-314758.framer.app/page
  * Description:       This plugin provides a simple way to integrate exercises and exams into your WordPress site.
  * Version:           1.0.0
@@ -19,59 +9,56 @@
  * Author URI:        https://www.linkedin.com/in/aar%C3%B3n-franco-fern%C3%A1ndez/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       Examens API
+ * Text Domain:       examens-api
  * Domain Path:       /languages
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if (!defined('WPINC')) {
+    die;
 }
 
-// Include necessary files
-require_once 'includes/functions.php';
-require_once 'includes/class-api-handler.php'; 
-require_once 'views/main-view.php'; 
-require_once 'views/results.php';
-require_once 'views/filters.php';
-require_once 'views/pagination.php';
-require_once 'views/exercise_view.php'; 
-require_once 'views/listing_view.php';
-require_once 'views/button-seo.php'; 
+// Include necessary files (Check existence before requiring)
+$includes = [
+    'includes/functions.php',
+    'includes/class-api-handler.php',
+    'views/main-view.php',
+    'views/results.php',
+    'views/filters.php',
+    'views/pagination.php',
+    'views/exercise_view.php',
+    'views/listing_view.php',
+    'views/button-seo.php',
+    'views/search.php',
+];
 
-// Rewrite urls for more friendly urls
-function add_exercise_rewrite_rules() {
-    // Individual exercise and solution rules (more specific first)
-    add_rewrite_rule(
-        '^ejercici/([a-zA-Z0-9-_]+)/?$',
-        'index.php?pagename=ejercici&id=$matches[1]',
-        'top'
-    );
+foreach ($includes as $file) {
+    $filepath = plugin_dir_path(__FILE__) . $file;
+    if (file_exists($filepath)) {
+        require_once $filepath;
+    }
+}
 
-    add_rewrite_rule(
-        '^solucio/([a-zA-Z0-9-_]+)/?$',
-        'index.php?pagename=solucio&id=$matches[1]',
-        'top'
-    );
+// Rewrite URLs for friendly links
+function add_exercise_rewrite_rules()
+{
+    // Regla para la página "exercici" con un ID
+    add_rewrite_rule('^exercicis-selectivitat/exercici/([a-zA-Z0-9-_]+)/?$', 'index.php?pagename=exercici&id=$matches[1]', 'top');
 
-    // Year listing rule (must be before subject rule)
-    add_rewrite_rule(
-        '^ejercicis/([0-9]{4})/?$',
-        'index.php?pagename=ejercicis&year=$matches[1]',
-        'top'
-    );
+    // Regla para la página "solucio" con un ID
+    add_rewrite_rule('^exercicis-selectivitat/solucio/([a-zA-Z0-9-_]+)/?$', 'index.php?pagename=solucio&id=$matches[1]', 'top');
 
-    // Subject listing rule (more permissive pattern, must be last)
-    add_rewrite_rule(
-        '^ejercicis/([^/]+)/?$',
-        'index.php?pagename=ejercicis&subject=$matches[1]',
-        'top'
-    );
+    // Regla para la página "exercicis" y un año
+    add_rewrite_rule('^exercicis-selectivitat/any/([0-9]{4})/?$', 'index.php?pagename=any&year=$matches[1]', 'top');
+
+    // Regla para la página "exercicis" y un "subject"
+    add_rewrite_rule('^exercicis-selectivitat/assignatura/([^/-][^/]*?)/?$', 'index.php?pagename=assignatura&subject=$matches[1]', 'top');
 }
 add_action('init', 'add_exercise_rewrite_rules');
 
-// Register the query variables
-function register_exercise_query_vars($vars) {
+// Register query variables
+function register_exercise_query_vars($vars)
+{
     $vars[] = 'id';
     $vars[] = 'year';
     $vars[] = 'subject';
@@ -79,10 +66,39 @@ function register_exercise_query_vars($vars) {
 }
 add_filter('query_vars', 'register_exercise_query_vars');
 
+// Clean subject parameter before use
+function clean_subject_parameter($value)
+{
+    if (get_query_var('pagename') === 'exercicis' && get_query_var('subject')) {
+        return str_replace('-', ' ', urldecode($value));
+    }
+    return $value;
+}
+add_filter('request', function ($vars) {
+    if (isset($vars['subject'])) {
+        $vars['subject'] = clean_subject_parameter($vars['subject']);
+    }
+    return $vars;
+});
+
 // Enqueue assets
-function enqueue_assets() {
-    wp_enqueue_style('examens-style', plugins_url('assets/css/style.css', __FILE__));
-    wp_enqueue_script('examens-script', plugins_url('assets/js/scripts.js', __FILE__), array('jquery'), null, true);
+function enqueue_assets()
+{
+    wp_enqueue_style('examens-style', plugin_dir_url(__FILE__) . 'assets/css/style.css');
+    wp_enqueue_script('examens-script', plugin_dir_url(__FILE__) . 'assets/js/scripts.js', ['jquery'], null, true);
 }
 add_action('wp_enqueue_scripts', 'enqueue_assets');
 
+// Flush rewrite rules on activation/deactivation
+function examens_activate()
+{
+    add_exercise_rewrite_rules();
+    flush_rewrite_rules();
+}
+register_activation_hook(__FILE__, 'examens_activate');
+
+function examens_deactivate()
+{
+    flush_rewrite_rules();
+}
+register_deactivation_hook(__FILE__, 'examens_deactivate');

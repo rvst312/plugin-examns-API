@@ -21,38 +21,53 @@ function mostrar_resultados($response)
 
     <!-- Results -->
     <div class="grid-container hidden" id="results-container">
-        <?php if (isset($response['error'])): ?>
-            <div class="error-message"><?= htmlspecialchars($response['error']); ?></div>
-        <?php elseif (isset($response['resultats']) && is_array($response['resultats'])): ?>
+        <?php if (!empty($response['error'])): ?>
+            <div class="error-message">
+                <?= htmlspecialchars($response['error']); ?>
+            </div>
+        <?php elseif (!empty($response['resultats']) && is_array($response['resultats'])): ?>
             <?php foreach ($response['resultats'] as $item): ?>
                 <div class="grid-item">
-                    <img src="<?= htmlspecialchars($item['url_miniatura']); ?>"
+                    <img src="<?= isset($item['url_miniatura']) ? htmlspecialchars($item['url_miniatura']) : 'placeholder.jpg'; ?>"
                         alt="Miniatura"
                         loading="lazy"
                         onload="this.style.opacity='1'">
                     <p style="text-align: center;">
-                        <span class="category"><?= htmlspecialchars($item['tipus_prova']); ?></span>
-                        <span class="theme"><?= htmlspecialchars($item['comunitat']); ?></span><br />
-                        <span class="subject"><?= htmlspecialchars($item['assignatura']); ?></span>
-                        <span class="convocatoria"><?= htmlspecialchars($item['convocatoria']); ?></span>
-                        <span class="year"><?= htmlspecialchars($item['any']); ?></span>
+                        <span class="category"><?= isset($item['tipus_prova']) ? htmlspecialchars($item['tipus_prova']) : 'Desconegut'; ?></span>
+                        <!--<span class="theme"><?= isset($item['comunitat']) ? htmlspecialchars($item['comunitat']) : 'Desconegut'; ?></span><br />-->
+                        <span class="subject"><?= isset($item['assignatura']) ? htmlspecialchars($item['assignatura']) : 'Desconegut'; ?></span>
+                        <span class="convocatoria"><?= isset($item['convocatoria']) ? htmlspecialchars($item['convocatoria']) : 'Desconegut'; ?></span>
+                        <span class="year"><?= isset($item['any']) ? htmlspecialchars($item['any']) : 'Desconegut'; ?></span>
                     </p>
                     <div class="buttons-item">
-                        <a class="button-secondary-exams"
-                            href="<?= esc_url(home_url('/ejercici/' . $item['id'])); ?>"
-                            target="_blank">
-                            Veure Exercici
-                        </a>
-                        <a class="button-secondary-exams"
-                            href="<?= esc_url(home_url('/solucio/' . $item['id'])); ?>"
-                            target="_blank">
-                            Veure Solució
-                        </a>
+                        <?php if (isset($item['tipus_resultat']) && $item['tipus_resultat'] === 'examen'): ?>
+                            <a class="button-secondary-exams"
+                               href="<?= esc_url(site_url('/examenes/' . ($item['id'] ?? '#'))); ?>">
+                                Examen
+                            </a>
+                            <a class="button-secondary-exams"
+                               href="<?= esc_url(site_url('/examenes/solucio/' . ($item['id'] ?? '#'))); ?>">
+                                Solució
+                            </a>
+                        <?php else: ?>
+                            <a class="button-secondary-exams"
+                               href="<?= esc_url(site_url('/exercicis-selectivitat/exercici/' . ($item['id'] ?? '#'))); ?>">
+                                Exercici
+                            </a>
+                            <a class="button-secondary-exams"
+                               href="<?= esc_url(site_url('/exercicis-selectivitat/solucio/' . ($item['id'] ?? '#'))); ?>">
+                                Solució
+                            </a>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endforeach; ?>
         <?php else: ?>
-            <div class="no-results">No se encontraron resultados :(</div>
+            <style>
+                .grid-container{  grid-template-columns: 1fr;  }</style>
+            <div class="no-results">
+                No s’han trobat resultats :(
+            </div>
         <?php endif; ?>
     </div>
 <?php

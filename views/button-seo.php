@@ -1,7 +1,17 @@
 <?php
-function render_seo_buttons()
+function render_seo_buttons($response = [])
 {
     try {
+        // Check if we have any results
+        $is_exam = (
+            isset($response['resultats'][0]['tipus_resultat']) &&
+            $response['resultats'][0]['tipus_resultat'] === 'examen'
+        );
+    
+        $base_path = $is_exam ? 'examens-de-selectivitat' : 'exercicis-selectivitat';
+        $url_subject = $is_exam ? 'asignatura' : 'assignatura';
+        $url_year = $is_exam? 'year' : 'any';
+
         // Get options category to config JSON
         $upload_dir = wp_upload_dir();
         if (is_wp_error($upload_dir)) {
@@ -58,10 +68,11 @@ function render_seo_buttons()
             <div class="year-buttons">
                 <?php
                 $currentYear = intval(date("Y"));
+                // Year buttons section
                 for ($year = 2005; $year <= $currentYear; $year++) {
                     printf(
-                        '<a href="%s" class="button-primary-exams">%s</a>',
-                        esc_url(home_url("/ejercicis/{$year}")),
+                        '<a href="%s" class="button-secondary-seo">%s</a>',
+                        esc_url(site_url("/{$base_path}/{$url_year}/{$year}")),
                         esc_html($year)
                     );
                 }
@@ -74,11 +85,12 @@ function render_seo_buttons()
             <!-- Subject buttons -->
             <div class="subject-buttons">
                 <?php
+                // Subject buttons section
                 foreach ($opciones_assignatura as $subject => $name) {
-                    $encoded_subject = urlencode(sanitize_text_field($subject));
+                    $encoded_subject = str_replace(' ', '-', sanitize_title($subject));
                     printf(
-                        '<a href="%s" class="button-primary-exams">%s</a>',
-                        esc_url(home_url("/ejercicis/{$encoded_subject}")),
+                        '<a href="%s" class="button-secondary-seo">%s</a>',
+                        esc_url(site_url("/{$base_path}/{$url_subject}/{$encoded_subject}")),
                         esc_html($name)
                     );
                 }

@@ -36,7 +36,7 @@ function send_data_to_api($data, $base_url, $endpoint) {
  * @param string $tematica La tematica (ej. "taula periòdica").
  * @param int $pagina Paginación (ej. 1).
  */
-function get_exams_data($base_url, $endpoint, $tipus_cerca, $comunitat, $tipus_prova, $assignatura, $convocatoria, $any, $tematica, $pagina) {
+function get_exams_data($base_url, $endpoint, $tipus_cerca, $comunitat, $tipus_prova, $assignatura, $convocatoria, $any, $paraules_clau, $tematica, $pagina) {
     $data = [
         "tipus_cerca" => $tipus_cerca,
         "comunitat" => $comunitat,
@@ -44,6 +44,7 @@ function get_exams_data($base_url, $endpoint, $tipus_cerca, $comunitat, $tipus_p
         "assignatura" => $assignatura,
         "convocatoria" => $convocatoria,
         "any" => $any,
+        "paraules_clau" => $paraules_clau,
         "incloure_anys_posteriors" => false,
         "tematica" => $tematica,
         "pagina" => $pagina,
