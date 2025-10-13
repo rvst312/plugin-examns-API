@@ -12,25 +12,10 @@ function render_seo_buttons($response = [])
         $url_subject = $is_exam ? 'asignatura' : 'assignatura';
         $url_year = $is_exam? 'year' : 'any';
 
-        // Get options category to config JSON
-        $upload_dir = wp_upload_dir();
-        if (is_wp_error($upload_dir)) {
-            throw new Exception('Error getting WordPress upload directory');
-        }
-
-        $json_file_path = $upload_dir['basedir'] . '/examens/config/configuracio_assignatures.json';
-        if (!file_exists($json_file_path)) {
-            throw new Exception('Configuration file not found: ' . $json_file_path);
-        }
-
-        $json_content = @file_get_contents($json_file_path);
-        if ($json_content === false) {
-            throw new Exception('Unable to read configuration file');
-        }
-
-        $json_data = json_decode($json_content, true);
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new Exception('Invalid JSON configuration: ' . json_last_error_msg());
+        // Get options from configuration JSON securely
+        $json_data = load_examens_config_json();
+        if (empty($json_data) || !is_array($json_data)) {
+            throw new Exception('Configuration file not found or invalid');
         }
 
         // Initialize list save options

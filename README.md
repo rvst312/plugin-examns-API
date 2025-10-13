@@ -75,6 +75,20 @@ Para que los filtros muestren asignaturas y temáticas, el plugin lee un archivo
 
 Si el archivo no existe o está vacío, los filtros mostrarán opciones por defecto o aparecerá un mensaje de error.
 
+### Ruta segura del JSON (opcional)
+Si quieres que el JSON esté en otra ubicación (por ejemplo, fuera del directorio público del sitio), puedes definir dos constantes en `wp-config.php` para fijar una ruta segura:
+
+```php
+// Ruta absoluta del archivo JSON
+define('EXAMENS_CONFIG_JSON', '/var/www/data/examens/configuracio_assignatures.json');
+
+// Directorio base permitido (el archivo debe estar dentro de esta carpeta)
+define('EXAMENS_CONFIG_BASE_DIR', '/var/www/data/examens');
+```
+
+- El plugin validará que el archivo exista, sea legible y esté dentro de `EXAMENS_CONFIG_BASE_DIR` para evitar accesos fuera de la ruta permitida.
+- Si las constantes no están definidas o la ruta no es válida, usará automáticamente la ruta por defecto en `uploads`.
+
 ## Cómo usarlo
 - Entra en `exercicis-selectivitat` (ejercicios) o `examens-de-selectivitat` (exámenes).
 - Usa los filtros (asignatura, año, convocatoria, temática) y el buscador por palabras clave.

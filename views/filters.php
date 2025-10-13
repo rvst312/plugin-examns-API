@@ -7,11 +7,9 @@
  */
 function mostrar_filtros($atts)
 {
-    // Get options category to config JSON.
-    // Example: {upload_basedir}/wp-content/uploads/examens/config/configuracio_assignatures.json
-    $json_file_path = wp_upload_dir()['basedir'] . '/examens/config/configuracio_assignatures.json';
-    if (!file_exists($json_file_path)) return 'Error: The configuration file is not found.' . $json_file_path;
-    $json_data = json_decode(file_get_contents($json_file_path), true);
+    // Load configuration JSON securely (path resolved via helper)
+    $json_data = load_examens_config_json();
+    if (empty($json_data)) return 'Error: The configuration file is not found.';
 
     // Initialize list save options: "subject", "theme", "community"
     $opciones_assignatura = [];
