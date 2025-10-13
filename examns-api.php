@@ -30,6 +30,7 @@ $includes = [
     'views/listing_view.php',
     'views/button-seo.php',
     'views/search.php',
+    'admin/settings.php',
 ];
 
 foreach ($includes as $file) {

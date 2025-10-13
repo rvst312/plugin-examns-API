@@ -94,6 +94,20 @@ define('EXAMENS_CONFIG_BASE_DIR', '/var/www/data/examens');
 - Usa los filtros (asignatura, año, convocatoria, temática) y el buscador por palabras clave.
 - Haz clic en `Exercici` / `Examen` para ver el PDF, y en `Solució` para ver la solución.
 
+## Configuración en Backoffice
+Puedes configurar la ruta del JSON desde el admin de WordPress:
+
+1. Ve a `Ajustes > Exàmens API` en el menú del administrador.
+2. Completa:
+   - `Ruta del archivo JSON`: ruta absoluta del archivo `configuracio_assignatures.json`.
+   - `Directorio base permitido`: carpeta dentro de la cual debe existir el archivo JSON.
+3. Guarda los cambios. En la parte inferior verás el “Estado de configuración” con la ruta resuelta si es válida.
+
+Notas:
+- Estas opciones del backoffice se usan si no has definido las constantes en `wp-config.php`.
+- Prioridad de configuración: `constantes` > `opciones del admin` > `ruta por defecto en uploads`.
+- Si la ruta es inválida o no legible, el plugin usará la ubicación por defecto.
+
 ## Shortcodes disponibles
 - `[mostrar_datos_api tipus_cerca="pregunta|examen"]` → Buscador con filtros.
 - `[item_view tipus="pregunta|examen"]` → Vista de detalle de un ejercicio/examen (detecta automáticamente si es solución por la URL).
