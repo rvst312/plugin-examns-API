@@ -40,12 +40,12 @@ foreach ($includes as $file) {
 }
 
 // Enqueue assets
-function enqueue_assets()
+function enqueue_assets_css_scripts()
 {
     wp_enqueue_style('examens-style', plugin_dir_url(__FILE__) . 'assets/css/style.css');
     wp_enqueue_script('examens-script', plugin_dir_url(__FILE__) . 'assets/js/scripts.js', ['jquery'], null, true);
 }
-add_action('wp_enqueue_scripts', 'enqueue_assets');
+add_action('wp_enqueue_scripts', 'enqueue_assets_css_scripts');
 
 // Rewrite URLs for friendly links
 function add_exercise_rewrite_rules()
