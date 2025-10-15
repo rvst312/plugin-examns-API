@@ -7,11 +7,49 @@
  */
 function mostrar_filtros($atts)
 {
-    // Get options category to config JSON.
-    // Example: {upload_basedir}/wp-content/uploads/examens/config/configuracio_assignatures.json
-    $json_file_path = wp_upload_dir()['basedir'] . '/examens/config/configuracio_assignatures.json';
-    if (!file_exists($json_file_path)) return 'Error: The configuration file is not found.' . $json_file_path;
-    $json_data = json_decode(file_get_contents($json_file_path), true);
+    // Get options category from remote JSON configuration with caching
+    $json_url = 'https://formaciomiro.com/wp-content/uploads/examens/config/configuracio_assignatures.json';
+    $cache_key = 'examens_config_json_' . md5($json_url);
+    
+    // Try to get cached data first
+    $json_data = get_transient($cache_key);
+    
+    if ($json_data === false) {
+        // Cache miss - fetch from remote URL
+        $response = wp_remote_get($json_url, array(
+            'timeout' => 30,
+            'headers' => array(
+                'Accept' => 'application/json',
+            )
+        ));
+        
+        // Check for errors in the HTTP request
+        if (is_wp_error($response)) {
+            return 'Error: No se pudo cargar la configuración. ' . $response->get_error_message();
+        }
+        
+        // Check HTTP response code
+        $response_code = wp_remote_retrieve_response_code($response);
+        if ($response_code !== 200) {
+            return 'Error: La configuración no está disponible (HTTP ' . $response_code . ').';
+        }
+        
+        // Get and decode JSON data
+        $json_body = wp_remote_retrieve_body($response);
+        $json_data = json_decode($json_body, true);
+        
+        // Validate JSON data
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            return 'Error: La configuración JSON no es válida.';
+        }
+        
+        if (empty($json_data)) {
+            return 'Error: La configuración está vacía.';
+        }
+        
+        // Cache the data for 1 hour (3600 seconds)
+        set_transient($cache_key, $json_data, 3600);
+    }
 
     // Initialize list save options: "subject", "theme", "community"
     $opciones_assignatura = [];

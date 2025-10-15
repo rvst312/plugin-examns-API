@@ -75,21 +75,47 @@ Para que los filtros muestren asignaturas y temáticas, el plugin lee un archivo
 
 Si el archivo no existe o está vacío, los filtros mostrarán opciones por defecto o aparecerá un mensaje de error.
 
-## Cómo usarlo
-- Entra en `exercicis-selectivitat` (ejercicios) o `examens-de-selectivitat` (exámenes).
-- Usa los filtros (asignatura, año, convocatoria, temática) y el buscador por palabras clave.
-- Haz clic en `Exercici` / `Examen` para ver el PDF, y en `Solució` para ver la solución.
-
-## Shortcodes disponibles
-- `[mostrar_datos_api tipus_cerca="pregunta|examen"]` → Buscador con filtros.
-- `[item_view tipus="pregunta|examen"]` → Vista de detalle de un ejercicio/examen (detecta automáticamente si es solución por la URL).
-- `[listing_view tipus_cerca="pregunta|examen"]` → Listado SEO por asignatura o año.
-
-## Problemas comunes
-- 404 o páginas en blanco: revisa que los slugs de las páginas coinciden y guarda de nuevo los enlaces permanentes.
-- No aparecen asignaturas/temáticas: confirma que `configuracio_assignatures.json` existe en `wp-content/uploads/examens/config/` y tiene el formato correcto.
-- Sin resultados en el buscador: prueba a cambiar filtros o palabras clave.
 
 ## Desactivar o desinstalar
 - Para desactivar: `Plugins > Desactivar`.
 - Para desinstalar: `Plugins > Borrar` (se eliminarán las reglas, pero tus páginas y el archivo JSON seguirán en tu sitio si no los borras manualmente).
+
+## Configuración de la API
+
+El plugin utiliza una configuración centralizada para la API que permite cambiar fácilmente la URL base y endpoints sin modificar cada archivo individualmente.
+
+### Configuración por defecto
+
+El plugin viene preconfigurado con los siguientes valores:
+
+- **URL Base**: `https://formaciomiro-cercador-api-ne-prd-dbebg8bnemhte3f9.northeurope-01.azurewebsites.net`
+- **Endpoint de búsqueda**: `/cerca`
+- **Endpoint de detalles**: `/detalls`
+- **Token de acceso**: `Bearer 123456789`
+- **Timeout**: `30` segundos
+- **Tamaño de página**: `12` elementos
+
+### Personalización de la configuración
+
+Para cambiar la configuración de la API, puedes modificar las constantes en el archivo `includes/config.php`:
+
+```php
+// Configuración de la API
+define('EXAMENS_API_BASE_URL', 'https://tu-nueva-api.com');
+define('EXAMENS_API_ENDPOINT_SEARCH', '/buscar');
+define('EXAMENS_API_ENDPOINT_DETAILS', '/detalles');
+define('EXAMENS_API_ACCESS_TOKEN', 'Bearer tu-nuevo-token');
+define('EXAMENS_API_TIMEOUT', 45);
+define('EXAMENS_API_PAGE_SIZE', 20);
+```
+
+### Funciones auxiliares disponibles
+
+El plugin proporciona funciones auxiliares para acceder a la configuración:
+
+- `get_examens_api_url($endpoint_type)`: Obtiene la URL completa para un endpoint específico
+- `get_examens_api_config()`: Obtiene toda la configuración de la API como array
+
+### Migración desde versiones anteriores
+
+Si actualizas desde una versión anterior que tenía URLs hardcodeadas, no necesitas hacer cambios adicionales. El plugin mantiene compatibilidad con las funciones legacy mientras migra automáticamente a la nueva configuración centralizada.
