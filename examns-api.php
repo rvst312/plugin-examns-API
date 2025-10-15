@@ -20,6 +20,7 @@ if (!defined('WPINC')) {
 
 // Include necessary files (Check existence before requiring)
 $includes = [
+    'utils/helpers.php',
     'includes/functions.php',
     'includes/class-api-handler.php',
     'views/main-view.php',
