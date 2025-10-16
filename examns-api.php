@@ -64,7 +64,6 @@ function add_exercise_rewrite_rules()
     add_rewrite_rule('^exercicis-selectivitat/assignatura/([^/-][^/]*?)/?$', 'index.php?pagename=assignatura&subject=$matches[1]', 'top');
 
 }
-add_action('init', 'add_exercise_rewrite_rules');
 
 function add_exam_rewrite_rules()
 {
@@ -80,7 +79,11 @@ function add_exam_rewrite_rules()
     // Regla para la página "examens-de-selectivitat" y un año
     add_rewrite_rule('^examens-de-selectivitat/year/([a-zA-Z0-9-_]+)/?$', 'index.php?pagename=year&year=$matches[1]', 'top');
 }
-add_action('init', 'add_exam_rewrite_rules');
+
+add_action('init', function() {
+    add_exercise_rewrite_rules();
+    add_exam_rewrite_rules();
+});
 
 // Register query variables
 function register_exercise_query_vars($vars)
