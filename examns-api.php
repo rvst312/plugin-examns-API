@@ -58,10 +58,10 @@ function add_exercise_rewrite_rules()
     add_rewrite_rule('^exercicis-selectivitat/solucio/([a-zA-Z0-9-_]+)/?$', 'index.php?pagename=solucio&id=$matches[1]', 'top');
 
     // Regla para la página "exercicis" y un año
-    add_rewrite_rule('^exercicis-selectivitat/any/([0-9]{4})/?$', 'index.php?pagename=any&year=$matches[1]', 'top');
+    add_rewrite_rule('^exercicis-selectivitat/any/([a-zA-Z0-9-_]+)/?$', 'index.php?pagename=any&custom_year=$matches[1]', 'top');
 
     // Regla para la página "exercicis" y un "subject"
-    add_rewrite_rule('^exercicis-selectivitat/assignatura/([^/-][^/]*?)/?$', 'index.php?pagename=assignatura&subject=$matches[1]', 'top');
+    add_rewrite_rule('^exercicis-selectivitat/assignatura/([a-zA-Z0-9-_]+)/?$', 'index.php?pagename=assignatura&custom_subject=$matches[1]', 'top');
 
 }
 
@@ -74,10 +74,10 @@ function add_exam_rewrite_rules()
     add_rewrite_rule('^examenes/solucio/([a-zA-Z0-9-_]+)/?$', 'index.php?pagename=examenes&id=$matches[1]', 'top');
 
     // Regla para la página "examens-de-selectivitat" y un "subject"
-    add_rewrite_rule('^examens-de-selectivitat/asignatura/([^/-][^/]*?)/?$', 'index.php?pagename=asignatura&subject=$matches[1]', 'top');
+    add_rewrite_rule('^examens-de-selectivitat/asignatura/([a-zA-Z0-9-_]+)/?$', 'index.php?pagename=asignatura&custom_subject=$matches[1]', 'top');
 	
     // Regla para la página "examens-de-selectivitat" y un año
-    add_rewrite_rule('^examens-de-selectivitat/year/([a-zA-Z0-9-_]+)/?$', 'index.php?pagename=year&year=$matches[1]', 'top');
+    add_rewrite_rule('^examens-de-selectivitat/year/([a-zA-Z0-9-_]+)/?$', 'index.php?pagename=year&custom_year=$matches[1]', 'top');
 }
 
 add_action('init', function() {
@@ -89,8 +89,8 @@ add_action('init', function() {
 function register_exercise_query_vars($vars)
 {
     $vars[] = 'id';
-    $vars[] = 'year';
-    $vars[] = 'subject';
+    $vars[] = 'custom_year';
+    $vars[] = 'custom_subject';
     return $vars;
 }
 add_filter('query_vars', 'register_exercise_query_vars');
@@ -98,17 +98,17 @@ add_filter('query_vars', 'register_exercise_query_vars');
 // Clean subject parameter before use
 function clean_subject_parameter($value)
 {
-    if (get_query_var('pagename') === 'exercicis' && get_query_var('subject')) {
+    if (get_query_var('pagename') === 'exercicis' && get_query_var('custom_subject')) {
         return str_replace('-', ' ', urldecode($value));
     }
-    else if (get_query_var('pagename') === 'examens' && get_query_var('subject')) {
+    else if (get_query_var('pagename') === 'examens' && get_query_var('custom_subject')) {
         return str_replace('-', ' ', urldecode($value));
     }
     return $value;
 }
 add_filter('request', function ($vars) {
-    if (isset($vars['subject'])) {
-        $vars['subject'] = clean_subject_parameter($vars['subject']);
+    if (isset($vars['custom_subject'])) {
+        $vars['custom_subject'] = clean_subject_parameter($vars['custom_subject']);
     }
     return $vars;
 });
