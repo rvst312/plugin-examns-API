@@ -91,31 +91,83 @@ El plugin viene preconfigurado con los siguientes valores:
 - **URL Base**: `https://formaciomiro-cercador-api-ne-prd-dbebg8bnemhte3f9.northeurope-01.azurewebsites.net`
 - **Endpoint de búsqueda**: `/cerca`
 - **Endpoint de detalles**: `/detalls`
-- **Token de acceso**: `Bearer 123456789`
 - **Timeout**: `30` segundos
 - **Tamaño de página**: `12` elementos
 
-### Personalización de la configuración
+### Configuración JSON remota
 
-Para cambiar la configuración de la API, puedes modificar las constantes en el archivo `includes/config.php`:
+El plugin utiliza la función `load_remote_json_config()` para cargar la configuración de asignaturas desde una URL remota. Esta función incluye:
 
-```php
-// Configuración de la API
-define('EXAMENS_API_BASE_URL', 'https://tu-nueva-api.com');
-define('EXAMENS_API_ENDPOINT_SEARCH', '/buscar');
-define('EXAMENS_API_ENDPOINT_DETAILS', '/detalles');
-define('EXAMENS_API_ACCESS_TOKEN', 'Bearer tu-nuevo-token');
-define('EXAMENS_API_TIMEOUT', 45);
-define('EXAMENS_API_PAGE_SIZE', 20);
+- **Caché automático**: Los datos se almacenan en caché durante 1 hora para mejorar el rendimiento
+- **Gestión de errores**: Manejo robusto de errores de red y JSON inválido
+- **Validación de datos**: Verificación de que los datos recibidos son válidos
+
+La URL de configuración por defecto es:
+```
+https://formaciomiro-cercador-api-ne-prd-dbebg8bnemhte3f9.northeurope-01.azurewebsites.net/configuracio_assignatures.json
 ```
 
 ### Funciones auxiliares disponibles
 
-El plugin proporciona funciones auxiliares para acceder a la configuración:
+El plugin proporciona las siguientes funciones auxiliares:
 
-- `get_examens_api_url($endpoint_type)`: Obtiene la URL completa para un endpoint específico
-- `get_examens_api_config()`: Obtiene toda la configuración de la API como array
+#### `load_remote_json_config()`
+Carga la configuración JSON remota con las siguientes características:
+- **Caché inteligente**: Utiliza `get_transient()` y `set_transient()` para almacenar datos durante 1 hora
+- **Gestión de errores HTTP**: Maneja errores de conexión y códigos de respuesta HTTP
+- **Validación JSON**: Verifica que los datos recibidos sean JSON válido
+- **Fallback de errores**: Retorna mensajes de error descriptivos en caso de fallo
+
+#### `send_data_to_api($data, $base_url, $endpoint)`
+Envía datos a la API y maneja la respuesta:
+- Realiza peticiones POST con datos JSON
+- Incluye headers de autenticación y content-type
+- Maneja errores de red y respuestas HTTP
+- Decodifica automáticamente las respuestas JSON
+
+#### `get_exams_data()`
+Función específica para obtener datos de exámenes con parámetros de filtrado:
+- Acepta múltiples parámetros de filtrado (asignatura, año, comunidad, etc.)
+- Utiliza `send_data_to_api()` internamente
+- Formatea automáticamente los datos para la API
+
+### Personalización de la configuración
+
+Para cambiar la URL de configuración JSON, puedes modificar la función `load_remote_json_config()` en el archivo `utils/helpers.php`:
+
+```php
+function load_remote_json_config() {
+    $config_url = 'https://tu-nueva-url.com/configuracion.json';
+    // ... resto de la función
+}
+```
 
 ### Migración desde versiones anteriores
 
-Si actualizas desde una versión anterior que tenía URLs hardcodeadas, no necesitas hacer cambios adicionales. El plugin mantiene compatibilidad con las funciones legacy mientras migra automáticamente a la nueva configuración centralizada.
+Si actualizas desde una versión anterior que utilizaba archivos JSON locales, el plugin ahora carga automáticamente la configuración desde una URL remota. No necesitas hacer cambios adicionales en tu instalación.
+
+## Changelog
+
+### Versión 2.0.0 (Actual)
+
+#### Nuevas características:
+- **Configuración JSON remota**: Implementación de `load_remote_json_config()` para cargar configuración desde URL remota
+- **Sistema de caché mejorado**: Caché automático de 1 hora para mejorar el rendimiento
+- **Gestión de errores robusta**: Manejo completo de errores HTTP y JSON inválido
+- **Código más limpio**: Refactorización de variables con nombres más descriptivos en inglés
+
+#### Mejoras técnicas:
+- Centralización de funciones auxiliares en `utils/helpers.php`
+- Eliminación de dependencias de archivos JSON locales
+- Mejor separación de responsabilidades entre componentes
+- Documentación actualizada y más completa
+
+#### Archivos modificados:
+- `utils/helpers.php`: Nueva función `load_remote_json_config()`
+- `views/button-seo.php`: Actualizado para usar la nueva función helper
+- `views/filters.php`: Actualizado para usar la nueva función helper
+- `examns-api.php`: Inclusión del archivo de helpers
+
+### Migración automática
+
+El plugin mantiene compatibilidad total con instalaciones existentes. La migración de archivos JSON locales a configuración remota es automática y transparente.
