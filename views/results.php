@@ -19,6 +19,14 @@ function mostrar_resultados($response)
     </div>
     <!-- End skeleton loader -->
 
+    <?php 
+    $theme_blue = '#bde0fe';
+    $theme_green = '#d9ed92';
+    $theme_red = '#ff8fab';
+
+    // Background color selection is now handled per item in the grid below
+    ?>
+
     <!-- Results -->
     <div class="grid-container hidden" id="results-container">
         <?php if (!empty($response['error'])): ?>
@@ -27,7 +35,22 @@ function mostrar_resultados($response)
             </div>
         <?php elseif (!empty($response['resultats']) && is_array($response['resultats'])): ?>
             <?php foreach ($response['resultats'] as $item): ?>
-                <div class="grid-item">
+                <?php
+                $bg_color = '#fff';
+                $tipus_prova = strtolower($item['tipus_prova'] ?? '');
+                $comunitat = strtolower($item['comunitat'] ?? '');
+
+                if ($tipus_prova === 'pap') {
+                    $bg_color = $theme_blue;
+                } elseif ($tipus_prova === 'selectivitat') {
+                    if ($comunitat === 'catalunya') {
+                        $bg_color = $theme_red;
+                    } elseif ($comunitat === 'madrid') {
+                        $bg_color = $theme_green;
+                    }
+                }
+                ?>
+                <div class="grid-item" style="background-color: <?= htmlspecialchars($bg_color); ?>;">
                     <img src="<?= isset($item['url_miniatura']) ? htmlspecialchars($item['url_miniatura']) : 'placeholder.jpg'; ?>"
                         alt="Miniatura"
                         loading="lazy"
