@@ -5,7 +5,7 @@
   --exam-secondary-color: #fff;
   --exam-text-color: #666;
   --exam-background-light: #e6e1e1;
-  --exam-border-color: #ccc;
+  --exam-border-color: #a0a0a0;
   --exam-font-size-lg: 16px;
   --exam-font-size-sm: 12px;
   --exam-border-radius: 9px;
@@ -25,8 +25,8 @@
 }
 
 .button-secondary-exams {
-  background: var(--exam-secondary-color) !important;
-  color: var(--exam-primary-color) !important;
+  background: var(--exam-primary-color) !important;
+  color: var(--exam-secondary-color) !important;
   border: none !important;
   border-radius: var(--exam-border-radius) !important;
   padding: 4px 8px !important;
@@ -34,6 +34,7 @@
   cursor: pointer !important;
   text-transform: uppercase !important;
   transition: background-color var(--exam-transition-speed) ease !important;
+  font-weight: 600 !important;
 }
 
 @media (max-width: 500px) {
@@ -90,7 +91,6 @@
   flex-direction: column;
   justify-content: space-between;
   gap: 10px;
-  background: var(--exam-background-light);
   border: 1px solid var(--exam-border-color);
   padding: 10px;
   border-radius: var(--exam-border-radius);
