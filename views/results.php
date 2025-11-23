@@ -32,9 +32,9 @@ function mostrar_resultados($response)
                 // Selectivitat Catalunya: Red
                 // Selectivitat Madrid: Green
 
-                $theme_blue = '#bde0fe';
-                $theme_green = '#d9ed92';
-                $theme_red = '#ffb387ff';
+                $theme_blue = '#bde0fe7c';
+                $theme_green = '#d9ed927c';
+                $theme_red = '#ffb38786';
                 // Default: Orange 
                 $bg_color = $theme_red; 
 
